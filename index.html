@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SpaceX</title>
-  <meta name="theme-color" content="#000000" />
   <style>
     html, body {
       margin: 0;
@@ -13,89 +12,82 @@
       width: 100%;
       overflow: hidden;
       font-family: Arial, sans-serif;
-      background: #000;
     }
 
-    /* GIF como imagen de fondo */
-    .bg {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-    }
-    .bg img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;  /* ocupa toda la pantalla */
+    /* Fondo con imagen */
+    body {
+      background: url("logo_principal.gif") center center / cover no-repeat;
     }
 
-    /* Contenido con el botón */
+    /* Contenedor principal */
     .stage {
       position: relative;
       height: 100vh;
       display: flex;
-      justify-content: center;
       align-items: flex-end;
+      justify-content: center;
       padding-bottom: 12vh;
     }
 
+    /* Botón */
     .btn {
       padding: 14px 32px;
-      font-size: 1.2em;
+      font-size: 18px;
       font-weight: bold;
-      border-radius: 12px;
+      border-radius: 10px;
       border: 2px solid #fff;
-      background: rgba(0,0,0,.65);
+      background: rgba(0,0,0,0.6);
       color: #fff;
       cursor: pointer;
-      transition: .2s;
+      transition: 0.3s;
     }
-    .btn:hover { background:#fff; color:#000; }
+
+    .btn:hover {
+      background: #fff;
+      color: #000;
+    }
 
     /* Overlay de mantenimiento */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.92);
+      background: rgba(0,0,0,0.92);
       display: flex;
       align-items: center;
       justify-content: center;
       transform: translateY(100%);
-      transition: transform .35s ease;
+      transition: transform 0.3s ease;
     }
     .overlay.show { transform: translateY(0); }
 
     .card {
-      max-width: 600px;
-      padding: 28px;
+      width: 90%;
+      max-width: 500px;
+      padding: 25px;
       border-radius: 12px;
-      text-align: center;
       background: #111;
       color: #fff;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <!-- Fondo GIF -->
-  <div class="bg">
-    <img src="logo_principal.gif" alt="Fondo animado">
-  </div>
-
-  <!-- Botón -->
+  <!-- Fondo como imagen -->
   <main class="stage">
     <button id="enterBtn" class="btn">Entrar</button>
   </main>
 
-  <!-- Aviso de mantenimiento -->
+  <!-- Mensaje de mantenimiento -->
   <section id="maintenance" class="overlay">
     <div class="card">
-      <h2>SpaceX en mantenimiento</h2>
+      <h2>🚧 SpaceX en mantenimiento 🚧</h2>
       <p>Estamos trabajando para mejorar la experiencia. Vuelve pronto 🚀</p>
     </div>
   </section>
 
   <script>
-    document.getElementById('enterBtn').addEventListener('click', function(e){
-      e.preventDefault();
+    // Mostrar aviso de mantenimiento
+    document.getElementById('enterBtn').addEventListener('click', function() {
       document.getElementById('maintenance').classList.add('show');
     });
   </script>
