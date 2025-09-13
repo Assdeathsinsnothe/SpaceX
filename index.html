@@ -6,112 +6,71 @@
 <title>SpaceX</title>
 <meta name="theme-color" content="#000000" />
 <style>
-  /* ---------- Base & tipografía ---------- */
   *{box-sizing:border-box}
-  html, body{
-    margin:0; padding:0;
-    height:100%; width:100%;
-    background:#000; color:#fff;
-    font-family: Arial, Helvetica, sans-serif;
-    overflow:hidden;
+  html,body{
+    margin:0;padding:0;height:100%;width:100%;
+    background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif;overflow:hidden
   }
 
-  /* ---------- Fondo a pantalla completa con <img> ---------- */
-  .bg{
-    position:fixed; inset:0; z-index:-1;
-  }
-  .bg img{
-    width:100%;
-    height:100%;
-    object-fit:cover;         /* cubre todo */
-    object-position:center;   /* punto focal por defecto */
-    display:block;
-  }
-  /* Ajuste para pantallas muy altas/angostas (móviles verticales):
-     enfoca la parte superior para evitar “corte raro” abajo */
-  @media (max-aspect-ratio: 3/4){
-    .bg img{ object-position: top center; }
-  }
-  /* Ajuste para ultra-anchas (monitores 21:9, etc.) */
-  @media (min-aspect-ratio: 16/9){
-    .bg img{ object-position: center; }
+  .bg{position:fixed;inset:0;z-index:-1}
+  .bg img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+
+  /* mejora encuadre en móviles verticales */
+  @media (max-aspect-ratio:3/4){
+    .bg img{object-position: top center}
   }
 
-  /* Vignette/overlay suave para contraste del botón y legibilidad en cualquier fondo */
-  .shade{
-    position:fixed; inset:0; pointer-events:none;
-    background:
-      linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.55) 65%, rgba(0,0,0,.75));
-    z-index:0;
+  .shade{position:fixed;inset:0;pointer-events:none;
+    background:linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.55) 65%, rgba(0,0,0,.75));
+    z-index:0
   }
 
-  /* ---------- Zona del botón ---------- */
   .stage{
-    position:relative;
-    height:100svh;            /* viewport real en móviles modernos */
-    height:100vh;             /* fallback */
-    width:100%;
-    display:flex; align-items:flex-end; justify-content:center;
-    padding-bottom: max(12vh, calc(env(safe-area-inset-bottom, 0px) + 24px));
-    z-index:1;                /* por encima del fondo y de la sombra */
+    position:relative;height:100svh;height:100vh;width:100%;
+    display:flex;align-items:flex-end;justify-content:center;
+    padding-bottom:max(12vh, calc(env(safe-area-inset-bottom,0px)+24px));
+    z-index:1
   }
 
   .btn{
-    padding:14px 32px;
-    font-size:clamp(16px, 2.8vw, 20px);
-    font-weight:700;
-    border-radius:12px;
-    border:2px solid #fff;
-    background:rgba(0,0,0,.65);
-    color:#fff;
-    cursor:pointer;
-    transition:.2s;
-    backdrop-filter:blur(3px);
-    box-shadow:0 10px 30px rgba(0,0,0,.45);
+    padding:14px 32px;font-size:clamp(16px,2.8vw,20px);font-weight:700;
+    border-radius:12px;border:2px solid #fff;background:rgba(0,0,0,.65);
+    color:#fff;cursor:pointer;transition:.2s;backdrop-filter:blur(3px);
+    box-shadow:0 10px 30px rgba(0,0,0,.45)
   }
-  .btn:hover{ background:#fff; color:#000; }
+  .btn:hover{background:#fff;color:#000}
 
-  /* ---------- Overlay de mantenimiento ---------- */
   .overlay{
-    position:fixed; inset:0;
-    background:rgba(0,0,0,.92);
-    display:flex; align-items:center; justify-content:center;
-    transform:translateY(100%);
-    transition:transform .35s ease;
-    z-index:2;
+    position:fixed;inset:0;background:rgba(0,0,0,.92);
+    display:flex;align-items:center;justify-content:center;
+    transform:translateY(100%);transition:transform .35s ease;z-index:2
   }
-  .overlay.show{ transform:translateY(0); }
-
+  .overlay.show{transform:translateY(0)}
   .card{
-    width:min(92vw, 720px);
-    border:1px solid #1b1b1b;
-    border-radius:16px;
-    padding:28px 22px;
-    text-align:center;
+    width:min(92vw,720px);border:1px solid #1b1b1b;border-radius:16px;
+    padding:28px 22px;text-align:center;
     background:linear-gradient(180deg, rgba(10,10,10,.85), rgba(6,6,6,.96));
-    color:#fff;
-    box-shadow:0 20px 80px rgba(0,0,0,.6);
+    color:#fff;box-shadow:0 20px 80px rgba(0,0,0,.6)
   }
-  .card h2{ margin:0 0 8px; font-size:clamp(20px, 5.4vw, 34px); }
-  .card p{ margin:0; opacity:.9; line-height:1.5; }
+  .card h2{margin:0 0 8px;font-size:clamp(20px,5.4vw,34px)}
+  .card p{margin:0;opacity:.9;line-height:1.5}
 
-  /* Botón más compacto si la pantalla es muy baja */
-  @media (max-height:520px){
-    .stage{ padding-bottom: max(8vh, calc(env(safe-area-inset-bottom, 0px) + 16px)); }
-    .btn{ padding:10px 24px; }
+  /* Cuadro de diagnóstico (puedes borrarlo cuando todo funcione) */
+  .probe{
+    position:fixed;right:8px;bottom:8px;z-index:3;
+    font:12px/1.3 monospace;color:#0f0;background:rgba(0,0,0,.6);
+    border:1px solid #0f0;border-radius:8px;padding:8px 10px
   }
 </style>
 </head>
 <body>
 
-  <!-- Fondo imagen (cambia el src si tu archivo tiene otro nombre/ruta) -->
+  <!-- Fondo (la imagen se decide por JS) -->
   <div class="bg" aria-hidden="true">
-    <img src="fondo_spacex.png?v=5"
-         alt="Fondo SpaceX"
-         onerror="this.onerror=null; this.src='logo_principal.gif?v=5';">
+    <img id="bgimg" alt="Fondo SpaceX">
   </div>
 
-  <!-- Sombra para asegurar contraste del botón en cualquier fondo -->
+  <!-- Sombra para contraste del botón -->
   <div class="shade" aria-hidden="true"></div>
 
   <!-- Botón -->
@@ -119,7 +78,7 @@
     <button id="enterBtn" class="btn">Entrar</button>
   </main>
 
-  <!-- Aviso de mantenimiento -->
+  <!-- Aviso mantenimiento -->
   <section id="maintenance" class="overlay" role="dialog" aria-modal="true">
     <div class="card">
       <h2>SpaceX en mantenimiento</h2>
@@ -127,7 +86,42 @@
     </div>
   </section>
 
+  <!-- Diagnóstico -->
+  <div id="probe" class="probe">Cargando fondo…</div>
+
 <script>
+  // Archivos a probar (ajusta si usas otros nombres/carpeta)
+  const candidates = [
+    "fondo_spacex.png?v=8",
+    "fondo_spacex.jpg?v=8",
+    "fondo_spacex.jpeg?v=8",
+    "logo_principal.gif?v=8",
+    "assets/img/fondo_spacex.png?v=8",
+    "assets/img/logo_principal.gif?v=8"
+  ];
+
+  const img = document.getElementById('bgimg');
+  const probe = document.getElementById('probe');
+
+  function tryNext(i=0){
+    if(i >= candidates.length){
+      probe.textContent = "No se pudo cargar ninguna imagen de fondo.";
+      return;
+    }
+    const url = candidates[i];
+    const test = new Image();
+    test.onload = () => {
+      img.src = url;
+      probe.textContent = "Fondo cargado: " + url;
+    };
+    test.onerror = () => {
+      probe.textContent = "Falló: " + url + " → probando siguiente…";
+      tryNext(i+1);
+    };
+    test.src = url;
+  }
+  tryNext();
+
   // Mostrar mantenimiento al pulsar "Entrar"
   document.getElementById('enterBtn').addEventListener('click', function(e){
     e.preventDefault();
