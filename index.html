@@ -1,81 +1,118 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SpaceX</title>
-  <meta name="theme-color" content="#000000" />
-  <style>
-    html, body {
-      margin: 0; padding: 0;
-      height: 100%; width: 100%;
-      background: #000;        /* fallback */
-      font-family: Arial, Helvetica, sans-serif;
-      overflow: hidden;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SpaceX</title>
+<meta name="theme-color" content="#000000" />
+<style>
+  /* ---------- Base & tipografía ---------- */
+  *{box-sizing:border-box}
+  html, body{
+    margin:0; padding:0;
+    height:100%; width:100%;
+    background:#000; color:#fff;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow:hidden;
+  }
 
-    /* Fondo a pantalla completa usando <img> */
-    .bg { position: fixed; inset: 0; z-index: -1; }
-    .bg img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;      /* cubre toda la pantalla */
-      object-position: center;
-      display: block;
-    }
+  /* ---------- Fondo a pantalla completa con <img> ---------- */
+  .bg{
+    position:fixed; inset:0; z-index:-1;
+  }
+  .bg img{
+    width:100%;
+    height:100%;
+    object-fit:cover;         /* cubre todo */
+    object-position:center;   /* punto focal por defecto */
+    display:block;
+  }
+  /* Ajuste para pantallas muy altas/angostas (móviles verticales):
+     enfoca la parte superior para evitar “corte raro” abajo */
+  @media (max-aspect-ratio: 3/4){
+    .bg img{ object-position: top center; }
+  }
+  /* Ajuste para ultra-anchas (monitores 21:9, etc.) */
+  @media (min-aspect-ratio: 16/9){
+    .bg img{ object-position: center; }
+  }
 
-    /* Contenido: botón */
-    .stage {
-      position: relative; height: 100vh; width: 100%;
-      display: flex; align-items: flex-end; justify-content: center;
-      padding-bottom: 12vh;
-    }
+  /* Vignette/overlay suave para contraste del botón y legibilidad en cualquier fondo */
+  .shade{
+    position:fixed; inset:0; pointer-events:none;
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.55) 65%, rgba(0,0,0,.75));
+    z-index:0;
+  }
 
-    .btn {
-      padding: 14px 32px;
-      font-size: clamp(16px, 2.8vw, 18px);
-      font-weight: 700;
-      border-radius: 12px;
-      border: 2px solid #fff;
-      background: rgba(0,0,0,.65);
-      color: #fff;
-      cursor: pointer;
-      transition: .2s;
-      backdrop-filter: blur(2px);
-    }
-    .btn:hover { background: #fff; color: #000; }
+  /* ---------- Zona del botón ---------- */
+  .stage{
+    position:relative;
+    height:100svh;            /* viewport real en móviles modernos */
+    height:100vh;             /* fallback */
+    width:100%;
+    display:flex; align-items:flex-end; justify-content:center;
+    padding-bottom: max(12vh, calc(env(safe-area-inset-bottom, 0px) + 24px));
+    z-index:1;                /* por encima del fondo y de la sombra */
+  }
 
-    /* Overlay mantenimiento */
-    .overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.92);
-      display: flex; align-items: center; justify-content: center;
-      transform: translateY(100%);
-      transition: transform .35s ease;
-    }
-    .overlay.show { transform: translateY(0); }
+  .btn{
+    padding:14px 32px;
+    font-size:clamp(16px, 2.8vw, 20px);
+    font-weight:700;
+    border-radius:12px;
+    border:2px solid #fff;
+    background:rgba(0,0,0,.65);
+    color:#fff;
+    cursor:pointer;
+    transition:.2s;
+    backdrop-filter:blur(3px);
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+  .btn:hover{ background:#fff; color:#000; }
 
-    .card {
-      width: min(92vw, 720px);
-      border: 1px solid #1b1b1b; border-radius: 16px;
-      padding: 28px 22px; text-align: center;
-      background: linear-gradient(180deg, rgba(10,10,10,.85), rgba(6,6,6,.96));
-      color: #fff;
-      box-shadow: 0 20px 80px rgba(0,0,0,.6);
-    }
-    .card h2 { margin: 0 0 8px; font-size: clamp(20px, 5.4vw, 34px); }
-    .card p { margin: 0; opacity: .9; line-height: 1.5; }
-  </style>
+  /* ---------- Overlay de mantenimiento ---------- */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,.92);
+    display:flex; align-items:center; justify-content:center;
+    transform:translateY(100%);
+    transition:transform .35s ease;
+    z-index:2;
+  }
+  .overlay.show{ transform:translateY(0); }
+
+  .card{
+    width:min(92vw, 720px);
+    border:1px solid #1b1b1b;
+    border-radius:16px;
+    padding:28px 22px;
+    text-align:center;
+    background:linear-gradient(180deg, rgba(10,10,10,.85), rgba(6,6,6,.96));
+    color:#fff;
+    box-shadow:0 20px 80px rgba(0,0,0,.6);
+  }
+  .card h2{ margin:0 0 8px; font-size:clamp(20px, 5.4vw, 34px); }
+  .card p{ margin:0; opacity:.9; line-height:1.5; }
+
+  /* Botón más compacto si la pantalla es muy baja */
+  @media (max-height:520px){
+    .stage{ padding-bottom: max(8vh, calc(env(safe-area-inset-bottom, 0px) + 16px)); }
+    .btn{ padding:10px 24px; }
+  }
+</style>
 </head>
 <body>
-  <!-- Fondo como imagen (con anticaché y fallback) -->
+
+  <!-- Fondo imagen (cambia el src si tu archivo tiene otro nombre/ruta) -->
   <div class="bg" aria-hidden="true">
-    <img
-      src="RUTA_A_TU_IMAGEN?v=4"
-      alt="Fondo SpaceX"
-      onerror="this.onerror=null; this.src='logo_principal.gif?v=4';"
-    >
+    <img src="fondo_spacex.png?v=5"
+         alt="Fondo SpaceX"
+         onerror="this.onerror=null; this.src='logo_principal.gif?v=5';">
   </div>
+
+  <!-- Sombra para asegurar contraste del botón en cualquier fondo -->
+  <div class="shade" aria-hidden="true"></div>
 
   <!-- Botón -->
   <main class="stage">
@@ -90,11 +127,12 @@
     </div>
   </section>
 
-  <script>
-    document.getElementById('enterBtn').addEventListener('click', function (e) {
-      e.preventDefault();
-      document.getElementById('maintenance').classList.add('show');
-    });
-  </script>
+<script>
+  // Mostrar mantenimiento al pulsar "Entrar"
+  document.getElementById('enterBtn').addEventListener('click', function(e){
+    e.preventDefault();
+    document.getElementById('maintenance').classList.add('show');
+  });
+</script>
 </body>
 </html>
