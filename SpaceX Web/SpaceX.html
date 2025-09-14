@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SpaceX</title>
+<meta name="theme-color" content="#000000">
+<style>
+  html,body{
+    margin:0; padding:0; height:100%; width:100%;
+    background:#000; overflow:hidden;
+    font-family: Arial, sans-serif;
+  }
+
+  /* Fondo GIF */
+  body{
+    background:url("assets/img/logo_principal.gif") center/cover no-repeat;
+  }
+
+  /* Botón Entrar (más abajo) */
+  .btn{
+    position:absolute;
+    bottom:12%; /* antes estaba en el centro, ahora más abajo */
+    left:50%;
+    transform:translateX(-50%);
+    padding:16px 28px;
+    border-radius:12px;
+    border:2px solid #fff;
+    background:rgba(0,0,0,0.6);
+    color:#fff;
+    font-size:20px;
+    font-weight:bold;
+    text-decoration:none;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .btn:hover{
+    background:#fff;
+    color:#000;
+  }
+
+  /* Overlay mantenimiento */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,.92);
+    display:flex; align-items:center; justify-content:center;
+    text-align:center; transform:translateY(100%);
+    transition:transform .4s ease;
+  }
+  .overlay.show{ transform:translateY(0); }
+
+  .maint{
+    max-width:720px;
+    border:1px solid #1b1b1b;
+    border-radius:16px;
+    padding:28px 22px;
+    background:linear-gradient(180deg, rgba(10,10,10,.8), rgba(6,6,6,.95));
+    box-shadow:0 20px 80px rgba(0,0,0,.6);
+    color:#fff;
+  }
+  .maint h2{
+    margin:0 0 8px;
+    font-size:clamp(22px,4.2vw,38px);
+  }
+</style>
+</head>
+<body>
+
+  <!-- Botón -->
+  <button class="btn" id="enterBtn">Entrar</button>
+
+  <!-- Overlay mantenimiento -->
+  <div id="maintenance" class="overlay">
+    <div class="maint">
+      <h2>SpaceX en mantenimiento</h2>
+      <p>Estamos trabajando para mejorar la experiencia. Vuelve pronto 🚀</p>
+    </div>
+  </div>
+
+<script>
+document.getElementById('enterBtn').addEventListener('click', e=>{
+  e.preventDefault();
+  document.getElementById('maintenance').classList.add('show');
+});
+</script>
+
+</body>
+</html>
